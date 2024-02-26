@@ -10,3 +10,11 @@ FROM reviews
 GROUP BY EXTRACT(month FROM submit_date),product_id
 ORDER BY EXTRACT(month FROM submit_date),product_id;
 --ex5
+SELECT sender_id, COUNT(message_id)	 
+FROM messages
+WHERE EXTRACT(month FROM sent_date)=08 
+AND EXTRACT(year FROM sent_date)=2022
+GROUP BY sender_id
+ORDER BY COUNT(message_id) DESC
+LIMIT 2;
+--ex6
