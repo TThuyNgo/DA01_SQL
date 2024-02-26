@@ -27,6 +27,19 @@ GROUP BY sender_id
 ORDER BY COUNT(message_id) DESC
 LIMIT 2;
 --ex6
+SELECT  tweet_id
+from Tweets
+WHERE length(content)>15
+--ex7
+SELECT activity_date as day, COUNT(DISTINCT user_id) as active_users 
+FROM Activity
+WHERE  activity_date BETWEEN '2019-06-27' AND '2019-07-27'
+GROUP BY activity_date
+--ex8
+select COUNT(*)
+from employees
+where EXTRACT(month FROM joining_date) BETWEEN 1 AND 7
+AND EXTRACT(year FROM joining_date) =2022;
 --ex9
 select POSITION ('a' IN first_name) 
 from worker
