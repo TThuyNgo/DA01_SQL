@@ -27,3 +27,11 @@ GROUP BY sender_id
 ORDER BY COUNT(message_id) DESC
 LIMIT 2;
 --ex6
+--ex9
+select POSITION ('a' IN first_name) 
+from worker
+where first_name = 'Amitah';
+--ex10
+select title, SUBSTRING(title, length(winery)+2, 4) as year
+from winemag_p2
+where country = 'Macedonia';
