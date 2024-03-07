@@ -6,6 +6,19 @@ HAVING COUNT(job_id)>=2)
 SELECT COUNT(company_id) AS duplicate_companies
 FROM new_table;
 --ex2
+(SELECT category, product, SUM(spend) total_spend
+FROM product_spend
+WHERE EXTRACT(year FROM transaction_date)= 2022 AND category ='appliance'
+GROUP BY category, product
+ORDER BY SUM(spend) DESC
+LIMIT 2)
+UNION ALL
+(SELECT category, product, SUM(spend) total_spend
+FROM product_spend
+WHERE EXTRACT(year FROM transaction_date)= 2022 AND category ='electronics'
+GROUP BY category, product
+ORDER BY SUM(spend) DESC
+LIMIT 2)
 --ex3
 SELECT COUNT(policy_holder_id) AS member_count
 FROM (SELECT policy_holder_id, COUNT(case_id) AS call_count
@@ -19,7 +32,22 @@ LEFT JOIN page_likes l ON p.page_id = l.page_id
 WHERE liked_date IS NULL
 ORDER BY p.page_id ASC;
 --ex5
+SELECT EXTRACT(month FROM current_month.event_date) as month, count(DISTINCT current_month.user_id) AS monthly_active_users
+FROM user_actions current_month
+LEFT JOIN user_actions prev_month ON current_month.user_id = prev_month.user_id
+WHERE EXTRACT(month FROM current_month.event_date) = 7
+AND EXTRACT(month FROM prev_month.event_date) = 6
+GROUP BY EXTRACT(month FROM current_month.event_date);
 --ex6
+SELECT
+DATE_FORMAT(trans_date, '%Y-%m') AS month,
+country,
+COUNT(*) AS trans_count,
+SUM(CASE WHEN state = 'approved' THEN 1 ELSE 0 END) AS approved_count,
+SUM(amount) AS trans_total_amount,
+SUM(CASE WHEN state = 'approved' THEN amount ELSE 0 END) AS approved_total_amount
+FROM Transactions
+GROUP BY country, DATE_FORMAT(trans_date, '%Y-%m');
 --ex7
 SELECT product_id, year as first_year ,quantity, price
 FROM Sales
