@@ -7,7 +7,7 @@ WITH rev_table AS (
     LAG(TPO) OVER (ORDER BY year_month) AS previous_TPO
   FROM (
     SELECT
-      CAST(FORMAT_TIMESTAMP('%Y-%m', TIMESTAMP(created_at)) AS DATE) AS year_month,
+      CAST(CONCAT(FORMAT_DATE('%Y-%m', created_at),'-01') AS DATE) AS year_month,
       SUM(sale_price) AS TPV,
       COUNT(DISTINCT order_id) AS TPO
     FROM bigquery-public-data.thelook_ecommerce.order_items
@@ -17,7 +17,7 @@ WITH rev_table AS (
 ),
 cost_table AS (
   SELECT
-    CAST(FORMAT_TIMESTAMP('%Y-%m', TIMESTAMP(o.created_at)) AS DATE) AS year_month,
+    CAST(CONCAT(FORMAT_DATE('%Y-%m', o.created_at),'-01') AS DATE) AS year_month,
     SUM(p.cost) AS Total_cost
   FROM `bigquery-public-data.thelook_ecommerce.products` AS p
   JOIN `bigquery-public-data.thelook_ecommerce.order_items` AS o ON p.id = o.product_id
@@ -37,3 +37,4 @@ SELECT
   (TPV-Total_cost)/Total_cost AS Profit_to_cost_ratio
 FROM rev_table r
 JOIN cost_table c ON c.year_month = r.year_month
+ORDER BY r.year_month
